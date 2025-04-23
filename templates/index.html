@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="{% static 'js/main.js' %}" defer></script>
     <script src="{% static 'js/theme.js' %}" defer></script>
+    <script src="{% static 'js/homan.js' %}" defer></script>
     <script src="{% static 'js/animations.js' %}" defer></script>
 </head>
 <body class="{{ request.COOKIES.theme|default:'light-mode' }}">
+    <canvas id="background-canvas"></canvas>
     <!-- Theme Toggle -->
     <button id="theme-toggle" class="floating-btn">
         <span class="theme-icon">🌓</span>

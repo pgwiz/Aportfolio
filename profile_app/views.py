@@ -2,6 +2,8 @@ from datetime import date
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from django_filters import rest_framework as filters
 from django.db.models import Avg
@@ -64,6 +66,43 @@ class BaseProfileViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user.profile)
+
+class ProfileUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        profile = request.user.profile
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        profile = request.user.profile
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+    
+# profile_app/views.py
+from .models import Skill
+from .serializers import SkillSerializer
+
+class SkillUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        skills = request.user.profile.skills.all()
+        serializer = SkillSerializer(skills, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SkillSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save(profile=request.user.profile)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
 
 class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer

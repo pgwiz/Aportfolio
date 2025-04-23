@@ -31,6 +31,8 @@ urlpatterns = [
     # Profile app endpoints
     path('api/portfolio/', include(router.urls)),
     path('', include('profile_app.urls')),
+    path('', include('authentication.urls')),
+    path('', include('chat.urls')),
     path('api/portfolio/', include('profile_app.urls')),
     
     # Chat app endpoints

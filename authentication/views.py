@@ -10,33 +10,30 @@ from .serializers import (
     CustomTokenObtainPairSerializer
 )
 
-class RegisterView(generics.GenericAPIView):
-    serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]
+# authentication/views.py
+from django.shortcuts import render, redirect
+from django.views.generic import View
+from .forms import RegistrationForm
+
+class RegisterView(View):
+    """
+    Handles user registration.
+    """
+    template_name = 'authentication/form.html'
+
+    def get(self, request):
+        # Initialize an empty form for GET requests
+        form = RegistrationForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        # Create user with hashed password
-        user = PortfolioUser.objects.create_user(
-            username=serializer.validated_data['username'],
-            email=serializer.validated_data.get('email', ''),
-            password=serializer.validated_data['password']
-        )
-        
-        # Generate tokens for immediate login
-        token_serializer = CustomTokenObtainPairSerializer(data={
-            'username': user.username,
-            'password': serializer.validated_data['password']
-        })
-        token_serializer.is_valid(raise_exception=True)
-        
-        return Response({
-            'user': UserSerializer(user).data,
-            'tokens': token_serializer.validated_data
-        }, status=status.HTTP_201_CREATED)
-
+        # Process form data for POST requests
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Redirect to login page after successful registration
+        return render(request, self.template_name, {'form': form})
+    
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 

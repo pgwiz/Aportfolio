@@ -11,6 +11,47 @@ function initializeWebSocket() {
     };
 }
 
+// static/js/main.js
+async function fetchProfileData() {
+    try {
+        const response = await fetch('/api/profile/update/', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        const data = await response.json();
+        populateProfile(data);
+    } catch (error) {
+        console.error('Failed to load profile:', error);
+    }
+}
+
+function populateProfile(data) {
+    document.getElementById('profile-name').value = data.name;
+    document.getElementById('profile-bio').value = data.bio;
+    document.getElementById('profile-tagline').value = data.tagline;
+}
+
+document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    try {
+        const response = await fetch('/api/profile/update/', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            body: formData
+        });
+
+        if (response.ok) {
+            alert('Profile updated successfully!');
+        } else {
+            alert('Failed to update profile.');
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+    }
+});
+
 // Fetch Portfolio Data
 async function fetchPortfolioData(endpoint) {
     try {

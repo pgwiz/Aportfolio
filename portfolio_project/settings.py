@@ -30,13 +30,18 @@ REDIS_URL = env('REDIS_URL', default='redis://localhost:6379')
 
 # Channel Layers Configuration
 CHANNEL_LAYERS = {
-    "default": {
+    ''' "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [REDIS_URL],
             "symmetric_encryption_keys": [env('ENCRYPTION_KEY', default='secret-key-here')],
         },
+    },'''
+    
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
+
 }
 
 # Optional: Direct Redis connection configuration if needed elsewhere
@@ -81,7 +86,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'rest_framework',
     'authentication',
     'chat',
     'profile_app',  
@@ -96,6 +101,10 @@ INSTALLED_APPS += ['drf_spectacular']
 INSTALLED_APPS += ['django_filters']
 
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',  # Default JSON response
+        'rest_framework.renderers.BrowsableAPIRenderer',  # Browsable API
+    ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],

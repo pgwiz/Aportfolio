@@ -1,0 +1,127 @@
+<!-- templates/rest_framework/horizontal/form.html -->
+{% load rest_framework %}
+<style>
+    /* Horizontal Form Styles */
+.form-horizontal {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-horizontal .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.form-horizontal label.col-form-label {
+    flex: 1;
+    font-weight: bold;
+    color: #333;
+    margin-right: 1rem;
+}
+
+.form-horizontal .form-field {
+    flex: 2;
+}
+
+.form-horizontal input,
+.form-horizontal select,
+.form-horizontal textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-horizontal input:focus,
+.form-horizontal select:focus,
+.form-horizontal textarea:focus {
+    border-color: #2ecc71;
+    outline: none;
+}
+
+.form-horizontal .error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+}
+
+.form-horizontal .form-actions {
+    text-align: right;
+}
+
+.form-horizontal .btn-primary {
+    padding: 0.8rem 1.5rem;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-horizontal .btn-primary:hover {
+    background: #27ae60;
+}
+</style>
+<div class="form-horizontal">
+    <form action="{{ request.path }}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Render Form Fields -->
+        <!-- Registration Tab Section -->
+<div class="tab-section">
+    <!-- Tab Button -->
+    <button class="tab-button" id="register-tab">
+        Register User ▼
+    </button>
+
+    <!-- Collapsible Form Container -->
+    <div class="form-container" id="register-form-container" style="display: none;">
+        <h2>Register</h2>
+        <form method="POST" class="register-form">
+            {% csrf_token %}
+            <!-- Render Form Fields -->
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+                <div class="form-field">
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error">{{ field.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-button">Register</button>
+        </form>
+    </div>
+</div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+    </div>
+{% endif %}
+{% for field in form %}
+    {% if field.errors %}
+        <div class="alert alert-danger">
+            {{ field.label }}: {{ field.errors }}
+        </div>
+    {% endif %}
+{% endfor %}
