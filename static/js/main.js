@@ -113,3 +113,39 @@ function showLiveUpdateIndicator() {
     indicator.style.display = 'flex';
     setTimeout(() => indicator.style.display = 'none', 3000);
 }
+
+// static/js/main.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Toggle Header Section
+    document.getElementById('header-tab')?.addEventListener('click', () => {
+        const container = document.getElementById('header-form-container');
+        container.style.display = container.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('header-tab').textContent =
+            container.style.display === 'block' ? 'Update Header ▲' : 'Update Header ▼';
+    });
+
+    // Toggle Skills Section
+    document.getElementById('skills-tab')?.addEventListener('click', () => {
+        const container = document.getElementById('skills-form-container');
+        container.style.display = container.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('skills-tab').textContent =
+            container.style.display === 'block' ? 'Update Skills ▲' : 'Update Skills ▼';
+    });
+
+    // Toggle Projects Section
+    document.getElementById('projects-tab')?.addEventListener('click', () => {
+        const container = document.getElementById('projects-form-container');
+        container.style.display = container.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('projects-tab').textContent =
+            container.style.display === 'block' ? 'Update Projects ▲' : 'Update Projects ▼';
+    });
+
+    // Toggle Contact Section
+    document.getElementById('contact-tab')?.addEventListener('click', () => {
+        const container = document.getElementById('contact-form-container');
+        container.style.display = container.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('contact-tab').textContent =
+            container.style.display === 'block' ? 'Update Contact Information ▲' : 'Update Contact Information ▼';
+    });
+});

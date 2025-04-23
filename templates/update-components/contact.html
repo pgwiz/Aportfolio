@@ -1,0 +1,21 @@
+<!-- templates/update-components/contact.html -->
+<div class="tab-section">
+    <button class="tab-button" id="contact-tab">
+        Update Contact Information ▼
+    </button>
+    <div class="form-container" id="contact-form-container" style="display: none;">
+        <h3>Update Contact Details</h3>
+        <form method="POST" action="{% url 'update_contact' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" value="{{ user.email }}">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" name="phone" value="{{ user.profile.phone|default_if_none:'' }}">
+            </div>
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+    </div>
+</div>

@@ -25,6 +25,47 @@ from rest_framework.response import Response
 from .models import Profile, Skill, Project, SocialLink
 from .serializers import ProfileSerializer, SkillSerializer, ProjectSerializer, SocialLinkSerializer
 
+
+# portfolio/views.py
+from django.shortcuts import render, redirect
+from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Profile, Skill, Project
+
+class UpdateHeaderView(LoginRequiredMixin, View):
+    def post(self, request):
+        profile = request.user.profile
+        profile.name = request.POST.get('name')
+        profile.tagline = request.POST.get('tagline')
+        profile.save()
+        return redirect('portfolio_updater')
+
+class UpdateSkillsView(LoginRequiredMixin, View):
+    def post(self, request):
+        skill_name = request.POST.get('skills')
+        if skill_name:
+            Skill.objects.create(user=request.user, name=skill_name)
+        return redirect('portfolio_updater')
+
+class UpdateProjectsView(LoginRequiredMixin, View):
+    def post(self, request):
+        Project.objects.create(
+            user=request.user,
+            name=request.POST.get('project_name'),
+            description=request.POST.get('project_description'),
+        )
+        return redirect('portfolio_updater')
+
+class UpdateContactView(LoginRequiredMixin, View):
+    def post(self, request):
+        user = request.user
+        user.email = request.POST.get('email')
+        user.profile.phone = request.POST.get('phone')
+        user.save()
+        user.profile.save()
+        return redirect('portfolio_updater')
+    
+    
 class HomePageView(TemplateView):
     """
     View for rendering the homepage of the portfolio.

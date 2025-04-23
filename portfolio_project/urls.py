@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.contrib.auth import views as auth_views
 
 # Import app viewsets
 from authentication.views import PortfolioUserViewSet
@@ -18,6 +19,8 @@ router.register(r'messages', MessageViewSet)
 router.register(r'notifications', NotificationViewSet)
 
 urlpatterns = [
+    # Other URLs
+    path('login/', auth_views.LoginView.as_view(template_name='authentication/login.html'), name='login'),
     # Admin interface
     path('admin/', admin.site.urls),
     

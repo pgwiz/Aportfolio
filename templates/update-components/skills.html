@@ -1,0 +1,17 @@
+<!-- templates/update-components/skills.html -->
+<div class="tab-section">
+    <button class="tab-button" id="skills-tab">
+        Update Skills ▼
+    </button>
+    <div class="form-container" id="skills-form-container" style="display: none;">
+        <h3>Update Skills</h3>
+        <form method="POST" action="{% url 'update_skills' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="skills">Add New Skill</label>
+                <input type="text" name="skills" placeholder="e.g., Python, JavaScript">
+            </div>
+            <button type="submit" class="submit-button">Add Skill</button>
+        </form>
+    </div>
+</div>

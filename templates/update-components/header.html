@@ -1,0 +1,21 @@
+<!-- templates/update-components/header.html -->
+<div class="tab-section">
+    <button class="tab-button" id="header-tab">
+        Update Header ▼
+    </button>
+    <div class="form-container" id="header-form-container" style="display: none;">
+        <h3>Update Header Details</h3>
+        <form method="POST" action="{% url 'update_header' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" value="{{ user.profile.name }}">
+            </div>
+            <div class="form-group">
+                <label for="tagline">Tagline</label>
+                <input type="text" name="tagline" value="{{ user.profile.tagline }}">
+            </div>
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+    </div>
+</div>

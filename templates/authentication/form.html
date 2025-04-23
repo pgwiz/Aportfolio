@@ -1,11 +1,10 @@
 <!-- templates/authentication/form.html -->
-{% extends "base.html" %}
+{% extends "../base.html" %}
 {% load static %}
 
 {% block content %}
-<div class="register-container">
-    <style>
-        /* Registration Form Styles */
+<style>
+    /* Registration Form Styles */
 .register-container {
     max-width: 400px;
     margin: 50px auto;
@@ -76,7 +75,8 @@
     border-radius: 5px;
     color: #721c24;
 }
-    </style>
+</style>
+<div class="register-container">
     <h2>Register</h2>
     <form method="POST" class="register-form">
         {% csrf_token %}
@@ -95,7 +95,7 @@
             <label for="{{ form.email.id_for_label }}">Email</label>
             {{ form.email }}
             {% if form.email.errors %}
-                <small class="error">{{ form.email.errors|striptags }}</small>
+                <small class="error">{{ form.username.errors|striptags }}</small>
             {% endif %}
         </div>
 

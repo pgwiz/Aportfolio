@@ -1,0 +1,21 @@
+<!-- templates/portfolio-updater.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="portfolio-updater">
+    <!-- Check if the user is authenticated -->
+    {% if user.is_authenticated %}
+        <h2>Welcome, {{ user.username }}!</h2>
+        <p>Update your portfolio details below:</p>
+
+        <!-- Include Update Components -->
+        {% include 'update-components/header.html' %}
+        {% include 'update-components/skills.html' %}
+        {% include 'update-components/projects.html' %}
+        {% include 'update-components/contact.html' %}
+    {% else %}
+        <p>You need to be logged in to access this page. <a href="{% url 'login' %}">Login here</a>.</p>
+    {% endif %}
+</main>
+{% endblock %}

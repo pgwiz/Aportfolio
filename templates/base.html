@@ -8,21 +8,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dev Portfolio - {{ title }}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 2rem;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 2rem 0;
+        }
+
+        /* Theme Toggle Button */
+        #theme-toggle {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #theme-toggle:hover {
+            background-color: #27ae60;
+        }
+
+        /* Tab Section */
+        .tab-section {
+            margin: 2rem 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #2ecc71;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: left;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background-color: #27ae60;
+        }
+
+        .form-container {
+            padding: 1rem;
+            display: none; /* Hidden by default */
+        }
+
+        /* Dark Mode Support */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ecf0f1;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2 {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode input,
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background-color: #333;
+            color: #ecf0f1;
+            border-color: #444;
+        }
+
+        body.dark-mode pre {
+            background-color: #222;
+        }
+
+        body.dark-mode .submit-button {
+            background-color: #3498db;
+        }
+
+        body.dark-mode .submit-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
-<body class="light-theme">
-    <div class="theme-toggle">
-        <button id="theme-switcher" aria-label="Toggle theme">
-            <span class="theme-icon">🌓</span>
-        </button>
-    </div>
-    
+<body class="{{ request.COOKIES.theme|default:'light-mode' }}">
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle">
+        <span class="theme-icon">🌓</span> Toggle Theme
+    </button>
+
+    <!-- Main Content -->
     <main class="portfolio-container">
         {% block content %}
         {% endblock %}
     </main>
 
-    <script src="{% static 'js/main.js' %}"></script>
-    <script src="{% static 'js/theme.js' %}"></script>
-    <script src="{% static 'js/animations.js' %}"></script>
+    <!-- Example Collapsible Tab Section -->
+    <div class="tab-section">
+        <!-- Tab Button -->
+        <button class="tab-button" id="register-tab">
+            Register User ▼
+        </button>
+
+        <!-- Collapsible Form Container -->
+        <div class="form-container" id="register-form-container">
+            <h2>Register</h2>
+            <form method="POST" class="register-form">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error">{{ field.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="submit-button">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for Theme Toggle -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function setTheme(isDark) {
+            body.classList.toggle('dark-mode', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = !body.classList.contains('dark-mode');
+            setTheme(isDark);
+        });
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme === 'dark');
+
+        // Toggle Registration Form Visibility
+        document.getElementById('register-tab').addEventListener('click', () => {
+            const formContainer = document.getElementById('register-form-container');
+            const isVisible = formContainer.style.display === 'block';
+
+            // Toggle visibility
+            formContainer.style.display = isVisible ? 'none' : 'block';
+
+            // Update button text
+            const tabButton = document.getElementById('register-tab');
+            tabButton.textContent = isVisible ? 'Register User ▼' : 'Register User ▲';
+        });
+    </script>
 </body>
 </html>

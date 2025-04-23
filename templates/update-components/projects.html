@@ -1,0 +1,21 @@
+<!-- templates/update-components/projects.html -->
+<div class="tab-section">
+    <button class="tab-button" id="projects-tab">
+        Update Projects ▼
+    </button>
+    <div class="form-container" id="projects-form-container" style="display: none;">
+        <h3>Update Projects</h3>
+        <form method="POST" action="{% url 'update_projects' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="project_name">Project Name</label>
+                <input type="text" name="project_name" placeholder="e.g., Portfolio Website">
+            </div>
+            <div class="form-group">
+                <label for="project_description">Description</label>
+                <textarea name="project_description" placeholder="Describe your project..."></textarea>
+            </div>
+            <button type="submit" class="submit-button">Add Project</button>
+        </form>
+    </div>
+</div>
