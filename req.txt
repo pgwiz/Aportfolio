@@ -27,4 +27,8 @@ rpds-py==0.24.0
 sqlparse==0.5.3
 typing_extensions==4.13.2
 tzdata==2025.2
+<<<<<<< HEAD
 uritemplate==4.1.1
+=======
+uritemplate==4.1.1
+>>>>>>> f37ac81ecf3d567d146853e72e7437501bc2248c
