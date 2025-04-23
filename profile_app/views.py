@@ -32,6 +32,38 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile, Skill, Project
 
+
+# portfolio/views.py
+from django.shortcuts import render, redirect
+from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class PortfolioUpdaterView(LoginRequiredMixin, View):
+    """
+    Renders the portfolio updater page with collapsible sections.
+    """
+    template_name = 'portfolio-updater.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+class UpdateHeaderView(LoginRequiredMixin, View):
+    """
+    Handles updating the header section of the portfolio.
+    """
+    def get(self, request):
+        # Render the form for GET requests
+        return render(request, 'update-components/header.html')
+
+    def post(self, request):
+        # Process form data for POST requests
+        profile = request.user.profile
+        profile.name = request.POST.get('name')
+        profile.tagline = request.POST.get('tagline')
+        profile.save()
+        return redirect('portfolio_updater')  # Redirect back to the updater page
+    
+    
 class UpdateHeaderView(LoginRequiredMixin, View):
     def post(self, request):
         profile = request.user.profile

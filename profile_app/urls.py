@@ -28,10 +28,13 @@ from .views import (
     UpdateSkillsView,
     UpdateProjectsView,
     UpdateContactView,
+    PortfolioUpdaterView,
+    
 )
 
 # Non-API routes
 non_api_urlpatterns = [
+     path('port-update/', PortfolioUpdaterView.as_view(), name='portfolio_updater'),
     path('update-header/', UpdateHeaderView.as_view(), name='update_header'),
     path('update-skills/', UpdateSkillsView.as_view(), name='update_skills'),
     path('update-projects/', UpdateProjectsView.as_view(), name='update_projects'),

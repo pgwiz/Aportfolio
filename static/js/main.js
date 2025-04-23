@@ -116,6 +116,7 @@ function showLiveUpdateIndicator() {
 
 // static/js/main.js
 
+// static/js/main.js
 document.addEventListener('DOMContentLoaded', () => {
     // Toggle Header Section
     document.getElementById('header-tab')?.addEventListener('click', () => {
