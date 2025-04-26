@@ -1,9 +1,14 @@
 <!-- templates/portfolio-updater.html -->
-{% extends "base.html" %}
+{% extends "update-base.html" %}
 {% load static %}
 
 {% block content %}
 <main class="portfolio-updater">
+    <!-- Load JavaScript Files -->
+    <script src="{% static 'js/main.js' %}" defer></script>
+    <script src="{% static 'js/theme.js' %}" defer></script>
+    <script src="{% static 'js/animations.js' %}" defer></script>
+
     <!-- Check if the user is authenticated -->
     {% if user.is_authenticated %}
         <h2>Welcome, {{ user.username }}!</h2>
@@ -18,4 +23,34 @@
         <p>You need to be logged in to access this page. <a href="{% url 'login' %}">Login here</a>.</p>
     {% endif %}
 </main>
+
+<script>
+    // static/js/main.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Helper function to toggle sections
+    const toggleSection = (tabId, containerId) => {
+        const tab = document.getElementById(tabId);
+        const container = document.getElementById(containerId);
+
+        if (!tab || !container) return;
+
+        tab.addEventListener('click', () => {
+            // Toggle visibility of the container
+            container.style.display = container.style.display === 'block' ? 'none' : 'block';
+
+            // Update the button text to indicate expanded/collapsed state
+            tab.textContent = container.style.display === 'block'
+                ? tab.textContent.replace('▼', '▲')
+                : tab.textContent.replace('▲', '▼');
+        });
+    };
+
+    // Initialize click listeners for each section
+    toggleSection('header-tab', 'header-form-container');
+    toggleSection('skills-tab', 'skills-form-container');
+    toggleSection('projects-tab', 'projects-form-container');
+    toggleSection('contact-tab', 'contact-form-container');
+});
+</script>
 {% endblock %}

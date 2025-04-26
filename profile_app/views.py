@@ -30,13 +30,15 @@ from .serializers import ProfileSerializer, SkillSerializer, ProjectSerializer, 
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from .models import Profile, Skill, Project
+from .serializers import ProfileSerializer, SkillSerializer, ProjectSerializer
 
-
-# portfolio/views.py
-from django.shortcuts import render, redirect
-from django.views.generic import View
-from django.contrib.auth.mixins import LoginRequiredMixin
+PortfolioUser = get_user_model()
 
 class PortfolioUpdaterView(LoginRequiredMixin, View):
     """
@@ -45,58 +47,176 @@ class PortfolioUpdaterView(LoginRequiredMixin, View):
     template_name = 'portfolio-updater.html'
 
     def get(self, request):
-        return render(request, self.template_name)
+        """
+        Fetches and serializes portfolio data for rendering.
+        """
+        try:
+            profile = request.user.profile
+            skills = profile.skills.all()
+            projects = profile.projects.all()
+
+            context = {
+                'profile': ProfileSerializer(profile).data if profile else None,
+                'skills': SkillSerializer(skills, many=True).data,
+                'projects': ProjectSerializer(projects, many=True).data,
+            }
+        except ObjectDoesNotExist:
+            # If the user's profile does not exist, create it
+            Profile.objects.get_or_create(user=request.user)
+            context = {'error': "Profile created. Please refresh the page."}
+        except Exception as e:
+            # Log the error and return a fallback message
+            print(f"Error loading portfolio data: {e}")
+            context = {'error': "Failed to load portfolio data."}
+
+        return render(request, self.template_name, context)
+
 
 class UpdateHeaderView(LoginRequiredMixin, View):
     """
     Handles updating the header section of the portfolio.
     """
     def get(self, request):
-        # Render the form for GET requests
-        return render(request, 'update-components/header.html')
+        """
+        Renders the form for GET requests.
+        """
+        try:
+            profile = request.user.profile
+            context = {
+                'name': profile.name,
+                'tagline': profile.tagline,
+            }
+        except ObjectDoesNotExist:
+            context = {'error': "Profile not found. Please refresh the page."}
+
+        return render(request, 'update-components/header.html', context)
 
     def post(self, request):
-        # Process form data for POST requests
-        profile = request.user.profile
-        profile.name = request.POST.get('name')
-        profile.tagline = request.POST.get('tagline')
-        profile.save()
-        return redirect('portfolio_updater')  # Redirect back to the updater page
-    
-    
-class UpdateHeaderView(LoginRequiredMixin, View):
-    def post(self, request):
-        profile = request.user.profile
-        profile.name = request.POST.get('name')
-        profile.tagline = request.POST.get('tagline')
-        profile.save()
-        return redirect('portfolio_updater')
+        """
+        Processes form data for POST requests.
+        """
+        try:
+            profile = request.user.profile
+            profile.name = request.POST.get('name')
+            profile.tagline = request.POST.get('tagline')
+            profile.save()
+            return redirect('portfolio_updater')  # Redirect back to the updater page
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': "Profile not found. Please refresh the page."}, status=404)
+        except Exception as e:
+            print(f"Error updating header: {e}")
+            return JsonResponse({'error': "Failed to update header."}, status=500)
+
 
 class UpdateSkillsView(LoginRequiredMixin, View):
+    """
+    Handles adding new skills to the user's profile.
+    """
     def post(self, request):
-        skill_name = request.POST.get('skills')
-        if skill_name:
-            Skill.objects.create(user=request.user, name=skill_name)
-        return redirect('portfolio_updater')
+        """
+        Processes form data for POST requests.
+        """
+        try:
+            skill_name = request.POST.get('name')
+            proficiency = request.POST.get('proficiency', 50)  # Default proficiency is 50%
+            skill_type = request.POST.get('skill_type')
+            category = request.POST.get('category')
+
+            if skill_name:
+                Skill.objects.create(
+                    profile=request.user.profile,
+                    name=skill_name,
+                    proficiency=proficiency,
+                    skill_type=skill_type,
+                    category=category
+                )
+            return redirect('portfolio_updater')
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': "Profile not found. Please refresh the page."}, status=404)
+        except Exception as e:
+            print(f"Error adding skill: {e}")
+            return JsonResponse({'error': "Failed to add skill."}, status=500)
+
 
 class UpdateProjectsView(LoginRequiredMixin, View):
+    """
+    Handles adding new projects to the user's profile.
+    """
     def post(self, request):
-        Project.objects.create(
-            user=request.user,
-            name=request.POST.get('project_name'),
-            description=request.POST.get('project_description'),
-        )
-        return redirect('portfolio_updater')
+        """
+        Processes form data for POST requests.
+        """
+        try:
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            project_url = request.POST.get('project_url')
+            repo_url = request.POST.get('repo_url')
+            tech_stack = request.POST.get('tech_stack', '').split(',')  # Convert comma-separated string to list
+            project_type = request.POST.get('project_type')
+            start_date = request.POST.get('start_date')
+            end_date = request.POST.get('end_date')
 
+            if title and description:
+                Project.objects.create(
+                    profile=request.user.profile,
+                    title=title,
+                    description=description,
+                    project_url=project_url,
+                    repo_url=repo_url,
+                    tech_stack=tech_stack,
+                    project_type=project_type,
+                    start_date=start_date,
+                    end_date=end_date
+                )
+            return redirect('portfolio_updater')
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': "Profile not found. Please refresh the page."}, status=404)
+        except Exception as e:
+            print(f"Error adding project: {e}")
+            return JsonResponse({'error': "Failed to add project."}, status=500)
+
+
+class UpdateContactView(LoginRequiredMixin, View):
+    """
+    Handles updating contact information for the user.
+    """
+    def post(self, request):
+        """
+        Processes form data for POST requests.
+        """
+        try:
+            profile = request.user.profile
+            profile.phone = request.POST.get('phone')
+            profile.save()
+
+            request.user.email = request.POST.get('email')
+            request.user.save()
+
+            return redirect('portfolio_updater')
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': "Profile not found. Please refresh the page."}, status=404)
+        except Exception as e:
+            print(f"Error updating contact info: {e}")
+            return JsonResponse({'error': "Failed to update contact information."}, status=500)
 class UpdateContactView(LoginRequiredMixin, View):
     def post(self, request):
         user = request.user
+
+        try:
+            # Attempt to access the profile
+            profile = user.profile
+        except ObjectDoesNotExist:
+            # Create the profile if it doesn't exist
+            Profile = user.profile.model  # Get the Profile model dynamically
+            profile = Profile.objects.create(user=user)
+
+        # Update contact details
         user.email = request.POST.get('email')
-        user.profile.phone = request.POST.get('phone')
+        profile.phone = request.POST.get('phone')
         user.save()
-        user.profile.save()
-        return redirect('portfolio_updater')
-    
+        profile.save()
+
+        return redirect('portfolio_updater')  # Redirect back to the updater page
     
 class HomePageView(TemplateView):
     """

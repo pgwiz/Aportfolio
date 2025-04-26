@@ -1,6 +1,21 @@
+<!-- components/projects.html -->
 <section class="projects-section animate-on-scroll">
     <h2>Projects</h2>
-    <div id="projects-grid" class="project-grid">
-        <!-- Project cards populated via API -->
+    <div class="projects-grid">
+        {% for project in projects %}
+        <div class="project-card">
+            <h4>{{ project.title }}</h4>
+            <p>{{ project.description }}</p>
+            <p><strong>Tech Stack:</strong> {{ project.tech_stack|join:", " }}</p>
+            <p><strong>Type:</strong> {{ project.get_project_type_display }}</p>
+            <p><strong>Dates:</strong> {{ project.start_date|date:"Y-m-d" }} to {{ project.end_date|default_if_none:"Present"|date:"Y-m-d" }}</p>
+            <a href="{{ project.project_url }}" target="_blank" class="btn">View Project</a>
+            {% if project.repo_url %}
+            <a href="{{ project.repo_url }}" target="_blank" class="btn">Repository</a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No projects added yet.</p>
+        {% endfor %}
     </div>
 </section>

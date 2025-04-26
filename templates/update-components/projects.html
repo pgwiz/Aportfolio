@@ -8,12 +8,41 @@
         <form method="POST" action="{% url 'update_projects' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="project_name">Project Name</label>
-                <input type="text" name="project_name" placeholder="e.g., Portfolio Website">
+                <label for="title">Project Title</label>
+                <input type="text" name="title" placeholder="e.g., Portfolio Website" required>
             </div>
             <div class="form-group">
-                <label for="project_description">Description</label>
-                <textarea name="project_description" placeholder="Describe your project..."></textarea>
+                <label for="description">Description</label>
+                <textarea name="description" rows="4" placeholder="Describe your project..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="project_url">Project URL</label>
+                <input type="url" name="project_url" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label for="repo_url">Repository URL</label>
+                <input type="url" name="repo_url" placeholder="https://github.com/example">
+            </div>
+            <div class="form-group">
+                <label for="tech_stack">Tech Stack (comma-separated)</label>
+                <input type="text" name="tech_stack" placeholder="Python, Django, React">
+            </div>
+            <div class="form-group">
+                <label for="project_type">Project Type</label>
+                <select name="project_type" required>
+                    <option value="LIVE">Live Project</option>
+                    <option value="ARCH">Archived</option>
+                    <option value="EXPR">Experiment</option>
+                    <option value="OS">Open Source</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" name="start_date" required>
+            </div>
+            <div class="form-group">
+                <label for="end_date">End Date (optional)</label>
+                <input type="date" name="end_date">
             </div>
             <button type="submit" class="submit-button">Add Project</button>
         </form>

@@ -1,12 +1,10 @@
-{% load static %}
-
-<header class="header-section animate-on-scroll">
-    <div class="profile-card">
-        <img src="{% static 'img/avatar.png' %}" alt="Avatar" class="avatar">
-        <h1 id="developer-name">Loading...</h1>
-        <p id="developer-tagline">Full-stack Developer</p>
-        <div class="social-links">
-            <!-- Dynamically populated via API -->
-        </div>
+<!-- components/header.html -->
+<section class="profile-section animate-on-scroll">
+    <h2>Profile</h2>
+    <div class="card">
+        <img src="{{ user.profile.avatar }}" alt="{{ user.profile.name }} Avatar" class="card-avatar">
+        <h3>{{ user.profile.name }}</h3>
+        <p class="tagline">{{ user.profile.tagline }}</p>
+        <p class="bio">{{ user.profile.bio }}</p>
     </div>
-</header>
+</section>

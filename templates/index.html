@@ -7,13 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cards.css' %}">
     <script src="{% static 'js/main.js' %}" defer></script>
     <script src="{% static 'js/theme.js' %}" defer></script>
-    <script src="{% static 'js/homan.js' %}" defer></script>
     <script src="{% static 'js/animations.js' %}" defer></script>
 </head>
 <body class="{{ request.COOKIES.theme|default:'light-mode' }}">
+    <!-- Background Canvas -->
     <canvas id="background-canvas"></canvas>
+
     <!-- Theme Toggle -->
     <button id="theme-toggle" class="floating-btn">
         <span class="theme-icon">🌓</span>

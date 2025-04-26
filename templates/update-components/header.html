@@ -9,11 +9,19 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" name="name" value="{{ user.profile.name }}">
+                <input type="text" name="name" value="{{ user.profile.name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="avatar">Avatar URL</label>
+                <input type="url" name="avatar" value="{{ user.profile.avatar }}" placeholder="Enter a valid image URL">
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea name="bio" rows="4" placeholder="Tell us about yourself">{{ user.profile.bio }}</textarea>
             </div>
             <div class="form-group">
                 <label for="tagline">Tagline</label>
-                <input type="text" name="tagline" value="{{ user.profile.tagline }}">
+                <input type="text" name="tagline" value="{{ user.profile.tagline }}" placeholder="e.g., Full Stack Developer">
             </div>
             <button type="submit" class="submit-button">Save Changes</button>
         </form>

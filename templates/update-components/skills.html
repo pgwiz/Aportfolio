@@ -8,8 +8,25 @@
         <form method="POST" action="{% url 'update_skills' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="skills">Add New Skill</label>
-                <input type="text" name="skills" placeholder="e.g., Python, JavaScript">
+                <label for="name">Skill Name</label>
+                <input type="text" name="name" placeholder="e.g., Python, JavaScript" required>
+            </div>
+            <div class="form-group">
+                <label for="proficiency">Proficiency (%)</label>
+                <input type="number" name="proficiency" min="0" max="100" value="50" required>
+            </div>
+            <div class="form-group">
+                <label for="skill_type">Skill Type</label>
+                <select name="skill_type" required>
+                    <option value="TECH">Technical</option>
+                    <option value="TOOL">Tool</option>
+                    <option value="SOFT">Soft Skill</option>
+                    <option value="LANG">Language</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" name="category" placeholder="e.g., Frontend, DevOps" required>
             </div>
             <button type="submit" class="submit-button">Add Skill</button>
         </form>
