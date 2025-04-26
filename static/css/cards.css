@@ -115,3 +115,73 @@ h2 {
 .btn:hover {
     background: #2980b9;
 }
+
+
+/* styles.css */
+.projects-section {
+    padding: 2rem;
+    text-align: center;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.project-card h4 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.project-card .description {
+    margin-bottom: 1rem;
+    color: #555;
+}
+
+.project-card .details {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.project-card .details li {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.project-card .actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.project-card .btn {
+    padding: 0.5rem 1rem;
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.project-card .btn.secondary {
+    background: #2ecc71;
+}
+
+.project-card .btn:hover {
+    opacity: 0.9;
+}
+
+.no-projects {
+    text-align: center;
+    color: #777;
+}

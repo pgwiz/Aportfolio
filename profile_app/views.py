@@ -47,31 +47,35 @@ class PortfolioUpdaterView(LoginRequiredMixin, View):
     template_name = 'portfolio-updater.html'
 
     def get(self, request):
-        """
-        Fetches and serializes portfolio data for rendering.
-        """
         try:
             profile = request.user.profile
-            skills = profile.skills.all()
             projects = profile.projects.all()
 
+            # Format dates for each project
+            formatted_projects = []
+            for project in projects:
+                formatted_project = {
+                    'title': project.title,
+                    'description': project.description,
+                    'tech_stack': project.tech_stack,
+                    'project_type': project.get_project_type_display(),
+                    'start_date': project.start_date.strftime("%Y-%m-%d") if project.start_date else "Not specified",
+                    'end_date': project.end_date.strftime("%Y-%m-%d") if project.end_date else "Present",
+                    'project_url': project.project_url,
+                    'repo_url': project.repo_url,
+                }
+                formatted_projects.append(formatted_project)
+
             context = {
-                'profile': ProfileSerializer(profile).data if profile else None,
-                'skills': SkillSerializer(skills, many=True).data,
-                'projects': ProjectSerializer(projects, many=True).data,
+                'profile': profile,
+                'projects': formatted_projects,
             }
-        except ObjectDoesNotExist:
-            # If the user's profile does not exist, create it
-            Profile.objects.get_or_create(user=request.user)
-            context = {'error': "Profile created. Please refresh the page."}
         except Exception as e:
-            # Log the error and return a fallback message
             print(f"Error loading portfolio data: {e}")
             context = {'error': "Failed to load portfolio data."}
 
         return render(request, self.template_name, context)
-
-
+    
 class UpdateHeaderView(LoginRequiredMixin, View):
     """
     Handles updating the header section of the portfolio.
@@ -85,6 +89,8 @@ class UpdateHeaderView(LoginRequiredMixin, View):
             context = {
                 'name': profile.name,
                 'tagline': profile.tagline,
+                'avatar': profile.avatar,
+                'bio': profile.bio,
             }
         except ObjectDoesNotExist:
             context = {'error': "Profile not found. Please refresh the page."}
@@ -97,17 +103,22 @@ class UpdateHeaderView(LoginRequiredMixin, View):
         """
         try:
             profile = request.user.profile
+
+            # Update all fields from the form
             profile.name = request.POST.get('name')
             profile.tagline = request.POST.get('tagline')
+            profile.avatar = request.POST.get('avatar')  # Add avatar field
+            profile.bio = request.POST.get('bio')        # Add bio field
+
+            # Save the updated profile
             profile.save()
+
             return redirect('portfolio_updater')  # Redirect back to the updater page
         except ObjectDoesNotExist:
             return JsonResponse({'error': "Profile not found. Please refresh the page."}, status=404)
         except Exception as e:
             print(f"Error updating header: {e}")
             return JsonResponse({'error': "Failed to update header."}, status=500)
-
-
 class UpdateSkillsView(LoginRequiredMixin, View):
     """
     Handles adding new skills to the user's profile.
@@ -176,47 +187,32 @@ class UpdateProjectsView(LoginRequiredMixin, View):
             return JsonResponse({'error': "Failed to add project."}, status=500)
 
 
-class UpdateContactView(LoginRequiredMixin, View):
-    """
-    Handles updating contact information for the user.
-    """
-    def post(self, request):
-        """
-        Processes form data for POST requests.
-        """
-        try:
-            profile = request.user.profile
-            profile.phone = request.POST.get('phone')
-            profile.save()
+from django.contrib import messages
 
-            request.user.email = request.POST.get('email')
-            request.user.save()
-
-            return redirect('portfolio_updater')
-        except ObjectDoesNotExist:
-            return JsonResponse({'error': "Profile not found. Please refresh the page."}, status=404)
-        except Exception as e:
-            print(f"Error updating contact info: {e}")
-            return JsonResponse({'error': "Failed to update contact information."}, status=500)
 class UpdateContactView(LoginRequiredMixin, View):
     def post(self, request):
         user = request.user
+        profile, created = Profile.objects.get_or_create(user=user)
+
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+
+        if not email:
+            messages.error(request, "Email is required.")
+            return redirect('portfolio_updater')
 
         try:
-            # Attempt to access the profile
-            profile = user.profile
-        except ObjectDoesNotExist:
-            # Create the profile if it doesn't exist
-            Profile = user.profile.model  # Get the Profile model dynamically
-            profile = Profile.objects.create(user=user)
+            user.email = email
+            profile.phone = phone
+            user.full_clean()  # Validate the User model
+            profile.full_clean()  # Validate the Profile model
+            user.save()
+            profile.save()
+            messages.success(request, "Contact information updated successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to update contact information: {str(e)}")
 
-        # Update contact details
-        user.email = request.POST.get('email')
-        profile.phone = request.POST.get('phone')
-        user.save()
-        profile.save()
-
-        return redirect('portfolio_updater')  # Redirect back to the updater page
+        return redirect('portfolio_updater')
     
 class HomePageView(TemplateView):
     """
