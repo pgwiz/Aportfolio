@@ -1,3 +1,4 @@
+<!-- base.html -->
 {% load static %}
 
 <!DOCTYPE html>
@@ -13,6 +14,108 @@
     <script src="{% static 'js/animations.js' %}" defer></script>
 </head>
 <body class="{{ request.COOKIES.theme|default:'light-mode' }}">
+    <style>
+        /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #f0f4f8, #c7eae4);
+    color: #2d3748;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.portfolio-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.component-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.component-section h2 {
+    margin-top: 0;
+    color: #1a73e8;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    text-align: left;
+}
+
+.card h3 {
+    margin: 0 0 0.5rem;
+    color: #2c3e50;
+}
+
+.card p {
+    margin: 0.5rem 0;
+    color: #555;
+}
+
+.floating-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+.floating-btn:hover {
+    background: #2980b9;
+}
+
+.skeleton-loader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.skeleton-item {
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+    </style>
     <!-- Background Canvas -->
     <canvas id="background-canvas"></canvas>
 
@@ -33,6 +136,10 @@
         {% include 'components/skills.html' %}
         {% include 'components/projects.html' %}
         {% include 'components/contact.html' %}
+        {% include 'components/experience.html' %}
+        {% include 'components/social-links.html' %}
+        {% include 'components/content.html' %}
+        {% include 'components/interactive.html' %}
     </main>
 </body>
 </html>

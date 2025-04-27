@@ -1,0 +1,23 @@
+<section class="interactive-section animate-on-scroll">
+    <h2>Interactive Features</h2>
+    <div class="interactive-grid">
+        {% if interactive %}
+            <div class="interactive-feature">
+                <p><strong>Code Playground:</strong> 
+                    {% if interactive.code_playground_enabled %}Enabled{% else %}Disabled{% endif %}
+                </p>
+                <p><strong>Live Streaming:</strong> 
+                    {% if interactive.live_streaming %}Enabled{% else %}Disabled{% endif %}
+                </p>
+                <p><strong>Last Stream Start:</strong> 
+                    {{ interactive.last_stream_start|default_if_none:"Not available"|date:"Y-m-d H:i:s" }}
+                </p>
+                <p><strong>Active Challenges:</strong> 
+                    {{ interactive.active_challenges|join:", " }}
+                </p>
+            </div>
+        {% else %}
+            <p>No interactive features configured yet.</p>
+        {% endif %}
+    </div>
+</section>

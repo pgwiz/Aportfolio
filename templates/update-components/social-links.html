@@ -1,0 +1,27 @@
+<!-- update-components/social-links.html -->
+<div class="tab-section">
+    <button class="tab-button" id="social-links-tab">
+        Update Social Links ▼
+    </button>
+    <div class="form-container" id="social-links-form-container" style="display: none;">
+        <h3>Update Social Links</h3>
+        <form method="POST" action="{% url 'update_social_links' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="platform">Platform</label>
+                <select name="platform" required>
+                    <option value="">Select Platform</option>
+                    <option value="GH">GitHub</option>
+                    <option value="LI">LinkedIn</option>
+                    <option value="TW">Twitter</option>
+                    <option value="TG">Telegram</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="url">URL</label>
+                <input type="url" name="url" placeholder="e.g., https://github.com/username" required>
+            </div>
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+    </div>
+</div>

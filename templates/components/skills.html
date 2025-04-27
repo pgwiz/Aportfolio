@@ -2,17 +2,19 @@
 <section class="skills-section animate-on-scroll">
     <h2>Skills</h2>
     <div class="skills-grid">
-        {% for skill in skills %}
-        <div class="skill-card">
-            <h4>{{ skill.name }}</h4>
-            <div class="skill-bar">
-                <div class="skill-progress" style="width: {{ skill.proficiency }}"></div>
-            </div>
-            <p><strong>Type:</strong> {{ skill.get_skill_type_display }}</p>
-            <p><strong>Category:</strong> {{ skill.category }}</p>
-        </div>
-        {% empty %}
-        <p>No skills added yet.</p>
-        {% endfor %}
+        {% if skills %}
+            {% for skill in skills %}
+                <div class="skill-card">
+                    <h4>{{ skill.name }}</h4>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: {{ skill.proficiency }}%;"></div>
+                    </div>
+                    <p><strong>Type:</strong> {{ skill.skill_type }}</p>
+                    <p><strong>Category:</strong> {{ skill.category }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No skills added yet.</p>
+        {% endif %}
     </div>
 </section>

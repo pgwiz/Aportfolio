@@ -1,0 +1,21 @@
+<section class="experience-section animate-on-scroll">
+    <h2>Experience</h2>
+    <div class="experience-grid">
+        {% if experiences %}
+            {% for experience in experiences %}
+                <div class="experience-card">
+                    <h4>{{ experience.title }}</h4>
+                    <p><strong>Organization:</strong> {{ experience.organization }}</p>
+                    <p><strong>Type:</strong> {{ experience.get_exp_type_display }}</p>
+                    <p><strong>Dates:</strong> 
+                        {{ experience.start_date|date:"Y-m-d" }} to 
+                        {{ experience.end_date|default_if_none:"Present"|date:"Y-m-d" }}
+                    </p>
+                    <p><strong>Description:</strong> {{ experience.description }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No experience added yet.</p>
+        {% endif %}
+    </div>
+</section>

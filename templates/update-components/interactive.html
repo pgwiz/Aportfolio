@@ -1,0 +1,27 @@
+<!-- update-components/interactive.html -->
+<div class="tab-section">
+    <button class="tab-button" id="interactive-tab">
+        Update Interactive Features ▼
+    </button>
+    <div class="form-container" id="interactive-form-container" style="display: none;">
+        <h3>Interactive Features</h3>
+        <form method="POST" action="{% url 'update_interactive' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="code_playground_enabled">
+                    <input type="checkbox" name="code_playground_enabled" 
+                           {% if user.profile.interactive.code_playground_enabled %}checked{% endif %}>
+                    Enable Code Playground
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="live_streaming">
+                    <input type="checkbox" name="live_streaming" 
+                           {% if user.profile.interactive.live_streaming %}checked{% endif %}>
+                    Enable Live Streaming
+                </label>
+            </div>
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+    </div>
+</div>

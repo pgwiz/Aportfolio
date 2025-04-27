@@ -2,14 +2,19 @@
 from django.db import models
 from authentication.models import PortfolioUser
 
+# models.py
+from django.db import models
+from authentication.models import PortfolioUser
+
 class Profile(models.Model):
     user = models.OneToOneField(PortfolioUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     avatar = models.URLField(max_length=500)
     bio = models.TextField(max_length=2000)
     tagline = models.CharField(max_length=200)
+    phone = models.CharField(max_length=15, null=True, blank=True)  # Added phone field
     updated_at = models.DateTimeField(auto_now=True)
-
+    
 class Skill(models.Model):
     SKILL_TYPES = (
         ('TECH', 'Technical'),

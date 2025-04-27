@@ -1,0 +1,19 @@
+<!-- components/content.html -->
+<section class="content-section animate-on-scroll">
+    <h2>Content</h2>
+    <div class="content-grid">
+        {% if contents %}
+            {% for content in contents %}
+                <div class="content-card">
+                    <h4>{{ content.title }}</h4>
+                    <p><strong>Type:</strong> {{ content.get_content_type_display }}</p>
+                    <p><strong>Published Date:</strong> {{ content.published_date|date:"Y-m-d" }}</p>
+                    <p><strong>Description:</strong> {{ content.description }}</p>
+                    <a href="{{ content.url }}" target="_blank">View Content</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No content added yet.</p>
+        {% endif %}
+    </div>
+</section>

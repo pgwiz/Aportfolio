@@ -1,0 +1,39 @@
+<!-- update-components/content.html -->
+<div class="tab-section">
+    <button class="tab-button" id="content-tab">
+        Update Content ▼
+    </button>
+    <div class="form-container" id="content-form-container" style="display: none;">
+        <h3>Update Content</h3>
+        <form method="POST" action="{% url 'update_content' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="content_type">Type</label>
+                <select name="content_type" required>
+                    <option value="">Select Type</option>
+                    <option value="BLOG">Blog Post</option>
+                    <option value="WRITE">Technical Writing</option>
+                    <option value="VIDEO">Video Demo</option>
+                    <option value="DECK">Presentation</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" placeholder="e.g., Building APIs with Django" required>
+            </div>
+            <div class="form-group">
+                <label for="url">URL</label>
+                <input type="url" name="url" placeholder="e.g., https://example.com/blog-post" required>
+            </div>
+            <div class="form-group">
+                <label for="published_date">Published Date</label>
+                <input type="date" name="published_date" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" rows="4" placeholder="Provide a short description of the content"></textarea>
+            </div>
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+    </div>
+</div>

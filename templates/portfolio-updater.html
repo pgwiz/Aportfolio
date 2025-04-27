@@ -19,6 +19,10 @@
         {% include 'update-components/skills.html' %}
         {% include 'update-components/projects.html' %}
         {% include 'update-components/contact.html' %}
+        {% include 'update-components/experience.html' %}
+        {% include 'update-components/social-links.html' %}
+        {% include 'update-components/content.html' %}
+        {% include 'update-components/interactive.html' %}
     {% else %}
         <p>You need to be logged in to access this page. <a href="{% url 'login' %}">Login here</a>.</p>
     {% endif %}
@@ -51,6 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSection('skills-tab', 'skills-form-container');
     toggleSection('projects-tab', 'projects-form-container');
     toggleSection('contact-tab', 'contact-form-container');
+    toggleSection('experience-tab', 'experience-form-container');
+    toggleSection('social-links-tab', 'social-links-form-container');
+    toggleSection('content-tab', 'content-form-container');
+    toggleSection('interactive-tab', 'interactive-form-container');
 });
 </script>
 {% endblock %}

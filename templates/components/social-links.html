@@ -1,0 +1,16 @@
+<!-- components/social-links.html -->
+<section class="social-links-section animate-on-scroll">
+    <h2>Social Links</h2>
+    <div class="social-links-grid">
+        {% if social_links %}
+            {% for link in social_links %}
+                <div class="social-link-card">
+                    <h4>{{ link.get_platform_display }}</h4>
+                    <a href="{{ link.url }}" target="_blank">{{ link.url }}</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No social links added yet.</p>
+        {% endif %}
+    </div>
+</section>

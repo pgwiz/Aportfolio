@@ -29,6 +29,15 @@ from .views import (
     UpdateProjectsView,
     UpdateContactView,
     PortfolioUpdaterView,
+    UpdateExperienceView,
+    UpdateSocialLinksView,
+    UpdateContentView,
+    UpdateInteractiveView,
+
+    ExperienceAPIView,
+    SocialLinksAPIView,
+    ContentAPIView,
+    InteractiveAPIView,
     
 )
 
@@ -38,6 +47,18 @@ non_api_urlpatterns = [
     path('update-header/', UpdateHeaderView.as_view(), name='update_header'),
     path('update-skills/', UpdateSkillsView.as_view(), name='update_skills'),
     path('update-projects/', UpdateProjectsView.as_view(), name='update_projects'),
+    
+    path('update-experience/', UpdateExperienceView.as_view(), name='update_experience'),
+    path('update-social-links/', UpdateSocialLinksView.as_view(), name='update_social_links'),
+    path('update-content/', UpdateContentView.as_view(), name='update_content'),
+    path('update-interactive/', UpdateInteractiveView.as_view(), name='update_interactive'),
+
+    path('api/experience/', ExperienceAPIView.as_view(), name='experience_api'),
+    path('api/social-links/', SocialLinksAPIView.as_view(), name='social_links_api'),
+    path('api/content/', ContentAPIView.as_view(), name='content_api'),
+    path('api/interactive/', InteractiveAPIView.as_view(), name='interactive_api'),
+
+    #path('contact/', views.ContactView.as_view(), name='contact'),
     path('update-contact/', UpdateContactView.as_view(), name='update_contact'),
     path('profile/update/', ProfileUpdateView.as_view(), name='profile-update'),
     path('skills/update/', SkillUpdateView.as_view(), name='skills-update'),
