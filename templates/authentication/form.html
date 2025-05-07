@@ -1,133 +1,145 @@
-<!-- templates/authentication/form.html -->
 {% extends "../base.html" %}
 {% load static %}
 
 {% block content %}
+
 <style>
-    /* Registration Form Styles */
-.register-container {
-    max-width: 400px;
+  /* From Uiverse.io by alexruix */
+  .form-box {
+    max-width: 300px;
+    background: #f1f7fe;
+    overflow: hidden;
+    border-radius: 16px;
+    color: #010101;
     margin: 50px auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+  }
 
-.register-container h2 {
+  .form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 24px 24px;
+    gap: 16px;
     text-align: center;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-}
+  }
 
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
+  /* Form text */
+  .title {
     font-weight: bold;
-    color: #333;
-}
+    font-size: 1.6rem;
+  }
 
-.form-group input {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  .subtitle {
     font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
+    color: #666;
+  }
 
-.form-group input:focus {
-    border-color: #2ecc71;
-    outline: none;
-}
+  /* Inputs box */
+  .form-container {
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #fff;
+    margin: 1rem 0 .5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-.error {
+  .input {
+    background: none;
+    border: 0;
+    outline: 0;
+    height: 40px;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+    font-size: .9rem;
+    padding: 8px 15px;
+  }
+
+  .error {
     color: #e74c3c;
-    font-size: 0.9rem;
-    margin-top: 0.2rem;
-}
+    font-size: 0.85rem;
+    text-align: left;
+    padding: 0 15px;
+  }
 
-.submit-button {
-    width: 100%;
-    padding: 0.8rem;
-    background: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 5px;
+  .form-section {
+    padding: 16px;
+    font-size: .85rem;
+    background-color: #e0ecfb;
+    box-shadow: rgb(0 0 0 / 8%) 0 -1px;
+    text-align: center;
+  }
+
+  .form-section a {
+    font-weight: bold;
+    color: #0066ff;
+    transition: color .3s ease;
+  }
+
+  .form-section a:hover {
+    color: #005ce6;
+    text-decoration: underline;
+  }
+
+  /* Button */
+  .form button {
+    background-color: #0066ff;
+    color: #fff;
+    border: 0;
+    border-radius: 24px;
+    padding: 10px 16px;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+    transition: background-color .3s ease;
+    margin-top: 8px;
+  }
 
-.submit-button:hover {
-    background: #27ae60;
-}
-
-.error-messages {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    color: #721c24;
-}
+  .form button:hover {
+    background-color: #005ce6;
+  }
 </style>
-<div class="register-container">
-    <h2>Register</h2>
-    <form method="POST" class="register-form">
-        {% csrf_token %}
 
-        <!-- Username Field -->
-        <div class="form-group">
-            <label for="{{ form.username.id_for_label }}">Username</label>
-            {{ form.username }}
-            {% if form.username.errors %}
-                <small class="error">{{ form.username.errors|striptags }}</small>
-            {% endif %}
-        </div>
+<div class="form-box">
+  <form class="form" method="POST">
+    {% csrf_token %}
+    <span class="title">Register</span>
+    <span class="subtitle">Create a free account with your email.</span>
 
-        <!-- Email Field -->
-        <div class="form-group">
-            <label for="{{ form.email.id_for_label }}">Email</label>
-            {{ form.email }}
-            {% if form.email.errors %}
-                <small class="error">{{ form.username.errors|striptags }}</small>
-            {% endif %}
-        </div>
-
-        <!-- Password Field -->
-        <div class="form-group">
-            <label for="{{ form.password.id_for_label }}">Password</label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <small class="error">{{ form.password.errors|striptags }}</small>
-            {% endif %}
-        </div>
-
-        <!-- Confirm Password Field -->
-        <div class="form-group">
-            <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-            {{ form.password2 }}
-            {% if form.password2.errors %}
-                <small class="error">{{ form.password2.errors|striptags }}</small>
-            {% endif %}
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="submit-button">Register</button>
-    </form>
-
-    <!-- Error Messages -->
     {% if form.non_field_errors %}
-        <div class="error-messages">
-            {% for error in form.non_field_errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-        </div>
+      <div class="error">{{ form.non_field_errors }}</div>
     {% endif %}
+
+    <div class="form-container">
+      {% if form.username.errors %}
+        <div class="error">{{ form.username.errors|striptags }}</div>
+      {% endif %}
+      <input type="text" name="{{ form.username.html_name }}" value="" class="input" placeholder="{{ form.username.field.widget.attrs.placeholder }}">
+
+      {% if form.email.errors %}
+        <div class="error">{{ form.email.errors|striptags }}</div>
+      {% endif %}
+      <input type="email" name="{{ form.email.html_name }}" value="" class="input" placeholder="{{ form.email.field.widget.attrs.placeholder }}">
+
+      {% if form.password.errors %}
+        <div class="error">{{ form.password.errors|striptags }}</div>
+      {% endif %}
+      <input type="password" name="{{ form.password.html_name }}" class="input" placeholder="{{ form.password.label }}">
+
+      {% if form.password2.errors %}
+        <div class="error">{{ form.password2.errors|striptags }}</div>
+      {% endif %}
+      <input type="password" name="{{ form.password2.html_name }}" class="input" placeholder="{{ form.password2.label }}">
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <div class="form-section">
+    <p>Have an account? <a href="{% url 'login' %}">Log in</a></p>
+  </div>
 </div>
+
 {% endblock %}

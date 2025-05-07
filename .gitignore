@@ -5,3 +5,11 @@ ptg.sh
 ptg.ps1
 __pycache__
 __pycache__
+*.egg-info
+*.egg
+*.whl
+*.tar.gz
+*.zip
+*.tar
+*.pyc
+.gitignore

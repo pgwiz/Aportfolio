@@ -1,6 +1,10 @@
 <!-- components/contact.html -->
 <section class="contact-section animate-on-scroll">
-    <h2>Contact</h2>
+    <h2>Contact
+        <span class="star">⭐</span>
+        <span class="star">⭐</span>
+        <span class="star">⭐</span>
+    </h2>
     <div class="card">
         <p><strong>Email:</strong> {{ user.email }}</p>
         <p><strong>Phone:</strong> {{ user.profile.phone|default_if_none:"Not provided" }}</p>

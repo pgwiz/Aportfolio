@@ -6,11 +6,13 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    background-color: #f9f9f9;
-    color: #333;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* White background */
+    color: #333333;
+    position: relative;
+    overflow-x: hidden;
 }
 
 body.dark-mode {
@@ -457,11 +459,6 @@ h2 {
     transform: translateY(0);
 }
 
-/* Light Mode */
-body {
-    background-color: #f9f9f9;
-    color: #333;
-}
 
 /* Dark Mode */
 body.dark-mode {
@@ -577,4 +574,16 @@ body.dark-mode select {
 
 .card:hover .card-info {
     color: #74ebd5;
+}
+
+
+/* styles.css */
+#tech-background-canvas {
+    position: fixed; /* Ensures it stays in place even when scrolling */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width of the viewport */
+    height: 100%; /* Full height of the viewport */
+    z-index: -1; /* Places it behind all other elements */
+    pointer-events: none; /* Disables interaction with the canvas */
 }

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dev Portfolio - {{ title }}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme2.css' %}" class="theme-stylesheet" data-theme="theme2">
     <script src="{% static 'js/theme.js' %}" defer></script>
     <script src="{% static 'js/animations.js' %}" defer></script>
     <script src="{% static 'js/main.js' %}" defer></script>
@@ -120,22 +121,34 @@
     </style>
 </head>
 <body class="{{ request.COOKIES.theme|default:'light-mode' }}">
-    <!-- Theme Toggle Button -->
-    <button id="theme-toggle">
-        <span class="theme-icon">🌓</span> Toggle Theme
-    </button>
 
+    <!-- base.html -->
+
+    
+    <!-- Theme Toggle Button -->
+    <!-- Theme Toggle -->
+<button id="theme-toggle" class="floating-btn">
+    <span class="theme-icon">{% if request.COOKIES.theme == 'theme2' %}🎨{% else %}🌓{% endif %}</span>
+</button>
+<canvas id="tech-background-canvas" style="position: absolute; top: 0; left: 0; z-index: -1;"></canvas>
+<script src="{% static 'js/tech-background.js' %}" defer></script>
+<canvas id="background-canvas"></canvas>
     <!-- Main Content -->
     <main class="portfolio-container">
         {% block content %}
         {% endblock %}
     </main>
 
+
     <!-- Example Collapsible Tab Section -->
     <div class="tab-section">
         
     </div>
-
+    
+    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+    <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="VERTICAL" data-vanity="peter-brian-68b7ab2a1" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://ke.linkedin.com/in/peter-brian-68b7ab2a1?trk=profile-badge">Peter Brian</a></div>
+    <script type="text/javascript">_linkedin_data_partner_id = "123456";</script>
+    <script type="text/javascript">window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || []; window._linkedin_data_partner_ids.push(_linkedin_data_partner_id);</script>
     <!-- JavaScript for Theme Toggle -->
     <script>
         const themeToggle = document.getElementById('theme-toggle');
