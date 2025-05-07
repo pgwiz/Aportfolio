@@ -133,28 +133,7 @@
 
     <!-- Example Collapsible Tab Section -->
     <div class="tab-section">
-        <!-- Tab Button -->
-        <button class="tab-button" id="register-tab">
-            Register User ▼
-        </button>
-
-        <!-- Collapsible Form Container -->
-        <div class="form-container" id="register-form-container">
-            <h2>Register</h2>
-            <form method="POST" class="register-form">
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <small class="error">{{ field.errors|striptags }}</small>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                <button type="submit" class="submit-button">Register</button>
-            </form>
-        </div>
+        
     </div>
 
     <!-- JavaScript for Theme Toggle -->

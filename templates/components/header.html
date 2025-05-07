@@ -2,9 +2,12 @@
 <section class="profile-section animate-on-scroll">
     <h2>Profile</h2>
     <div class="card">
-        <img src="{{ user.profile.avatar }}" alt="{{ user.profile.name }} Avatar" class="card-avatar">
-        <h3>{{ user.profile.name }}</h3>
-        <p class="tagline">{{ user.profile.tagline }}</p>
-        <p class="bio">{{ user.profile.bio }}</p>
+        <!-- Gradient Border Container -->
+        <div class="card-info">
+            <img src="{{ user.profile.avatar }}" alt="{{ user.profile.name }} Avatar" class="card-avatar">
+            <h3>{{ user.profile.name }}</h3>
+            <p class="tagline">{{ user.profile.tagline }}</p>
+            <p class="bio">{{ user.profile.bio }}</p>
+        </div>
     </div>
 </section>

@@ -456,3 +456,125 @@ h2 {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* Light Mode */
+body {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #1a1a1a;
+    color: #ecf0f1;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #ecf0f1;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: #333;
+    color: #ecf0f1;
+    border-color: #444;
+}
+
+/* Gradient Border for Cards */
+.card, .skill-card, .project-card, .experience-card, .social-link-card, .content-card, .interactive-feature {
+    position: relative;
+    z-index: 1;
+    border-radius: 1rem;
+    overflow: visible; /* Ensure pseudo-elements are visible */
+}
+
+/* Base card styling (keep existing properties) */
+.card, .skill-card, .project-card, .experience-card, .social-link-card, .content-card, .interactive-feature {
+    --background: linear-gradient(to right, #74ebd5 0%, #acb6e5 100%);
+    background: var(--background);
+    padding: 1rem; /* Keep your existing padding */
+}
+
+/* Pseudo-elements for gradient border */
+.card::before,
+.card::after,
+.skill-card::before,
+.skill-card::after,
+.project-card::before,
+.project-card::after,
+.experience-card::before,
+.experience-card::after,
+.social-link-card::before,
+.social-link-card::after,
+.content-card::before,
+.content-card::after,
+.interactive-feature::before,
+.interactive-feature::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 1rem;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.card::before,
+.skill-card::before,
+.project-card::before,
+.experience-card::before,
+.social-link-card::before,
+.content-card::before,
+.interactive-feature::before {
+    background: linear-gradient(to bottom right, #f6d365 0%, #fda085 100%);
+    transform: rotate(2deg);
+}
+
+.card::after,
+.skill-card::after,
+.project-card::after,
+.experience-card::after,
+.social-link-card::after,
+.content-card::after,
+.interactive-feature::after {
+    background: linear-gradient(to top right, #84fab0 0%, #8fd3f4 100%);
+    transform: rotate(-2deg);
+}
+
+/* Hover effect */
+.card:hover::before,
+.card:hover::after,
+.skill-card:hover::before,
+.skill-card:hover::after,
+.project-card:hover::before,
+.project-card:hover::after,
+.experience-card:hover::before,
+.experience-card:hover::after,
+.social-link-card:hover::before,
+.social-link-card:hover::after,
+.content-card:hover::before,
+.content-card:hover::after,
+.interactive-feature:hover::before,
+.interactive-feature:hover::after {
+    opacity: 0;
+}
+
+/* Card content styling */
+.card-info {
+    background: #78ffe9; /* Dark background for content */
+    color: white;
+    border-radius: 0.7rem;
+    padding: 1rem;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.card:hover .card-info {
+    color: #74ebd5;
+}

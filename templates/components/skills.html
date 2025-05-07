@@ -5,12 +5,15 @@
         {% if skills %}
             {% for skill in skills %}
                 <div class="skill-card">
-                    <h4>{{ skill.name }}</h4>
-                    <div class="skill-bar">
-                        <div class="skill-progress" style="width: {{ skill.proficiency }}%;"></div>
+                    <!-- Gradient Border Container -->
+                    <div class="skill-card-info">
+                        <h4>{{ skill.name }}</h4>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: {{ skill.proficiency }}%;"></div>
+                        </div>
+                        <p><strong>Type:</strong> {{ skill.skill_type }}</p>
+                        <p><strong>Category:</strong> {{ skill.category }}</p>
                     </div>
-                    <p><strong>Type:</strong> {{ skill.skill_type }}</p>
-                    <p><strong>Category:</strong> {{ skill.category }}</p>
                 </div>
             {% endfor %}
         {% else %}
