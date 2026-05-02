@@ -1,43 +1,37 @@
-// animations.js
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px'
-};
+// animations.js — reveals elements with .animate-on-scroll as they enter the viewport,
+// and animates skill bar fills to their target percentage.
+(function () {
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-        }
-    });
-}, observerOptions);
-
-document.querySelectorAll('.animate-on-scroll').forEach(element => {
-    observer.observe(element);
-});
-
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
+    function fillSkillBars(scope) {
+        var bars = (scope || document).querySelectorAll('[data-skill-fill]');
+        bars.forEach(function (bar) {
+            var target = parseFloat(bar.getAttribute('data-target')) || 0;
+            target = Math.max(0, Math.min(100, target));
+            bar.style.width = target + '%';
         });
-    });
-});
+    }
 
+    function reveal(el) {
+        el.classList.add('is-visible');
+        fillSkillBars(el);
+    }
 
-// animations.js
-document.addEventListener('DOMContentLoaded', () => {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
+    var revealTargets = document.querySelectorAll('.animate-on-scroll');
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+        revealTargets.forEach(reveal);
+        return;
+    }
+
+    var observer = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-                entry.target.classList.add('active');
+                reveal(entry.target);
+                obs.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
 
-    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-        observer.observe(el);
-    });
-});
+    revealTargets.forEach(function (el) { observer.observe(el); });
+})();

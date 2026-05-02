@@ -1,105 +1,119 @@
-// tech-background.js
-const canvas = document.getElementById('tech-background-canvas');
-const ctx = canvas.getContext('2d');
+// tech-background.js — subtle node/connection background animation.
+// Adapts to the current theme via the [data-theme] attribute and respects
+// reduced-motion preferences. Pauses when the page is not visible.
+(function () {
+    var canvas = document.getElementById('tech-background-canvas');
+    if (!canvas || !canvas.getContext) return;
 
-// Resize canvas to fit the window
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+    var ctx = canvas.getContext('2d');
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Node class for dots
-class Node {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.radius = Math.random() * 2 + 1; // Random size for dots
-        this.speedX = Math.random() * 2 - 1; // Random horizontal speed
-        this.speedY = Math.random() * 2 - 1; // Random vertical speed
+    var dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    var width = 0;
+    var height = 0;
+    var rafId = null;
+    var running = true;
+
+    function resize() {
+        width = canvas.clientWidth || window.innerWidth;
+        height = canvas.clientHeight || window.innerHeight;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        // Bounce off edges
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    function colors() {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        return dark
+            ? { node: 'rgba(165, 180, 252, 0.85)', line: 'rgba(99, 102, 241, ' }
+            : { node: 'rgba(79, 70, 229, 0.55)',  line: 'rgba(99, 102, 241, ' };
     }
 
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(66, 135, 245, 0.8)'; // Blue dots
-        ctx.fill();
-    }
-}
-
-// Line class for connections
-class Connection {
-    constructor(nodeA, nodeB) {
-        this.nodeA = nodeA;
-        this.nodeB = nodeB;
-        this.opacity = 0;
+    function makeNodes(count) {
+        var arr = [];
+        for (var i = 0; i < count; i++) {
+            arr.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 1.5 + 0.6
+            });
+        }
+        return arr;
     }
 
-    update() {
-        const dx = this.nodeB.x - this.nodeA.x;
-        const dy = this.nodeB.y - this.nodeA.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+    var NODE_COUNT = window.innerWidth < 700 ? 28 : 55;
+    var LINK_DISTANCE = 140;
+    var nodes = [];
 
-        // Fade out connections over distance
-        this.opacity = 1 - distance / 200;
-        if (this.opacity < 0) this.opacity = 0;
-    }
+    function frame() {
+        if (!running) return;
+        var c = colors();
+        ctx.clearRect(0, 0, width, height);
 
-    draw() {
-        if (this.opacity > 0) {
-            ctx.strokeStyle = `rgba(34, 197, 94, ${this.opacity})`; // Green lines
-            ctx.lineWidth = 1;
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            n.x += n.vx;
+            n.y += n.vy;
+            if (n.x < 0 || n.x > width)  n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
+
             ctx.beginPath();
-            ctx.moveTo(this.nodeA.x, this.nodeA.y);
-            ctx.lineTo(this.nodeB.x, this.nodeB.y);
-            ctx.stroke();
+            ctx.fillStyle = c.node;
+            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+            ctx.fill();
+
+            for (var j = i + 1; j < nodes.length; j++) {
+                var m = nodes[j];
+                var dx = n.x - m.x;
+                var dy = n.y - m.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < LINK_DISTANCE) {
+                    var alpha = (1 - dist / LINK_DISTANCE) * 0.5;
+                    ctx.strokeStyle = c.line + alpha + ')';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(n.x, n.y);
+                    ctx.lineTo(m.x, m.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        rafId = requestAnimationFrame(frame);
+    }
+
+    function start() {
+        if (rafId) return;
+        running = true;
+        rafId = requestAnimationFrame(frame);
+    }
+
+    function stop() {
+        running = false;
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
         }
     }
-}
 
-// Create nodes and connections
-const nodes = [];
-const connections = [];
-const nodeCount = 50;
+    resize();
+    nodes = makeNodes(NODE_COUNT);
 
-for (let i = 0; i < nodeCount; i++) {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    nodes.push(new Node(x, y));
-}
-
-for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-        connections.push(new Connection(nodes[i], nodes[j]));
+    if (prefersReducedMotion) {
+        // Render a single static frame, then stop.
+        frame();
+        stop();
+    } else {
+        start();
     }
-}
 
-// Animation loop
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Update and draw nodes
-    nodes.forEach(node => {
-        node.update();
-        node.draw();
+    window.addEventListener('resize', function () {
+        resize();
+        nodes = makeNodes(NODE_COUNT);
     });
 
-    // Update and draw connections
-    connections.forEach(connection => {
-        connection.update();
-        connection.draw();
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stop(); else if (!prefersReducedMotion) start();
     });
-
-    requestAnimationFrame(animate);
-}
-animate();
+})();

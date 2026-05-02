@@ -1,27 +1,57 @@
-<section class="interactive-section animate-on-scroll">
-    <h2>Interactive Features
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="interactive-grid">
-        {% if interactive %}
-            <div class="interactive-feature">
-                <p><strong>Code Playground:</strong> 
-                    {% if interactive.code_playground_enabled %}Enabled{% else %}Disabled{% endif %}
-                </p>
-                <p><strong>Live Streaming:</strong> 
-                    {% if interactive.live_streaming %}Enabled{% else %}Disabled{% endif %}
-                </p>
-                <p><strong>Last Stream Start:</strong> 
-                    {{ interactive.last_stream_start|default_if_none:"Not available"|date:"Y-m-d H:i:s" }}
-                </p>
-                <p><strong>Active Challenges:</strong> 
-                    {{ interactive.active_challenges|join:", " }}
-                </p>
+{# components/interactive.html — feature flags / live status #}
+{% if interactive %}
+<section id="interactive" class="animate-on-scroll">
+    <div class="section-header">
+        <span class="section-eyebrow">Live</span>
+        <h2 class="section-title">Interactive</h2>
+        <p class="section-subtitle">Optional features that may be available right now.</p>
+    </div>
+
+    <div class="card-grid">
+        <article class="card">
+            <h3 class="card__title">Code playground</h3>
+            <p class="card__body">
+                {% if interactive.code_playground_enabled %}
+                    Enabled — try it out live.
+                {% else %}
+                    Currently disabled.
+                {% endif %}
+            </p>
+            <div class="chip-row">
+                <span class="chip {% if interactive.code_playground_enabled %}chip--accent{% endif %}">
+                    {% if interactive.code_playground_enabled %}On{% else %}Off{% endif %}
+                </span>
             </div>
-        {% else %}
-            <p>No interactive features configured yet.</p>
+        </article>
+
+        <article class="card">
+            <h3 class="card__title">Live streaming</h3>
+            <p class="card__body">
+                {% if interactive.live_streaming %}
+                    Live now.
+                {% elif interactive.last_stream_start %}
+                    Last stream {{ interactive.last_stream_start|date:"M j, Y" }}.
+                {% else %}
+                    Currently offline.
+                {% endif %}
+            </p>
+            <div class="chip-row">
+                <span class="chip {% if interactive.live_streaming %}chip--accent{% endif %}">
+                    {% if interactive.live_streaming %}● Live{% else %}Offline{% endif %}
+                </span>
+            </div>
+        </article>
+
+        {% if interactive.active_challenges %}
+            <article class="card">
+                <h3 class="card__title">Active challenges</h3>
+                <div class="chip-row">
+                    {% for challenge in interactive.active_challenges %}
+                        <span class="chip">{{ challenge }}</span>
+                    {% endfor %}
+                </div>
+            </article>
         {% endif %}
     </div>
 </section>
+{% endif %}

@@ -1,29 +1,38 @@
-<!-- components/experience.html -->
-<section class="experience-section animate-on-scroll">
-    <h2>Experience
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="experience-grid">
-        {% if experiences %}
-            {% for experience in experiences %}
-                <div class="experience-card">
-                    <!-- Gradient Border Container -->
-                    <div class="experience-card-info">
-                        <h4>{{ experience.title }}</h4>
-                        <p><strong>Organization:</strong> {{ experience.organization }}</p>
-                        <p><strong>Type:</strong> {{ experience.get_exp_type_display }}</p>
-                        <p><strong>Dates:</strong> 
-                            {{ experience.start_date|date:"Y-m-d" }} to 
-                            {{ experience.end_date|default_if_none:"Present"|date:"Y-m-d" }}
-                        </p>
-                        <p><strong>Description:</strong> {{ experience.description }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No experience added yet.</p>
-        {% endif %}
+{# components/experience.html — vertical timeline #}
+<section id="experience" class="animate-on-scroll">
+    <div class="section-header">
+        <span class="section-eyebrow">Experience</span>
+        <h2 class="section-title">Where I've been</h2>
+        <p class="section-subtitle">Roles, education, and notable milestones.</p>
     </div>
+
+    {% if experiences %}
+        <div class="timeline">
+            {% for experience in experiences %}
+                <article class="timeline-item">
+                    <div class="timeline-item__head">
+                        <h3 class="timeline-item__title">{{ experience.title }}</h3>
+                        <span class="timeline-item__dates">
+                            {{ experience.start_date|date:"M Y" }} –
+                            {% if experience.end_date %}{{ experience.end_date|date:"M Y" }}{% else %}Present{% endif %}
+                        </span>
+                    </div>
+                    <p class="timeline-item__org">
+                        <strong>{{ experience.organization }}</strong>
+                        {% if experience.exp_type %}
+                            <span class="chip">{{ experience.get_exp_type_display }}</span>
+                        {% endif %}
+                    </p>
+                    {% if experience.description %}
+                        <p>{{ experience.description }}</p>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <p class="empty__title">No experience added yet</p>
+            <p>Roles and education will show up here.</p>
+        </div>
+    {% endif %}
 </section>

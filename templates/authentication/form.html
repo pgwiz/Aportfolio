@@ -1,145 +1,75 @@
-{% extends "../base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
+{% block title %}Sign up · {{ profile.name|default:"Aportfolio" }}{% endblock %}
+
 {% block content %}
+<div class="form-card">
+    <h1 class="form-card__title">Create your account</h1>
+    <p class="form-card__subtitle">It only takes a minute.</p>
 
-<style>
-  /* From Uiverse.io by alexruix */
-  .form-box {
-    max-width: 300px;
-    background: #f1f7fe;
-    overflow: hidden;
-    border-radius: 16px;
-    color: #010101;
-    margin: 50px auto;
-  }
+    <form method="POST">
+        {% csrf_token %}
 
-  .form {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 32px 24px 24px;
-    gap: 16px;
-    text-align: center;
-  }
+        {% if form.non_field_errors %}
+            <div class="error">{{ form.non_field_errors }}</div>
+        {% endif %}
 
-  /* Form text */
-  .title {
-    font-weight: bold;
-    font-size: 1.6rem;
-  }
+        <div>
+            <label for="id_username">Username</label>
+            <input type="text"
+                   id="id_username"
+                   name="{{ form.username.html_name }}"
+                   value="{{ form.username.value|default_if_none:'' }}"
+                   autocomplete="username"
+                   required>
+            {% if form.username.errors %}
+                <div class="error">{{ form.username.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-  .subtitle {
-    font-size: 1rem;
-    color: #666;
-  }
+        <div>
+            <label for="id_email">Email</label>
+            <input type="email"
+                   id="id_email"
+                   name="{{ form.email.html_name }}"
+                   value="{{ form.email.value|default_if_none:'' }}"
+                   autocomplete="email"
+                   required>
+            {% if form.email.errors %}
+                <div class="error">{{ form.email.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-  /* Inputs box */
-  .form-container {
-    overflow: hidden;
-    border-radius: 8px;
-    background-color: #fff;
-    margin: 1rem 0 .5rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+        <div>
+            <label for="id_password">Password</label>
+            <input type="password"
+                   id="id_password"
+                   name="{{ form.password.html_name }}"
+                   autocomplete="new-password"
+                   required>
+            {% if form.password.errors %}
+                <div class="error">{{ form.password.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-  .input {
-    background: none;
-    border: 0;
-    outline: 0;
-    height: 40px;
-    width: 100%;
-    border-bottom: 1px solid #eee;
-    font-size: .9rem;
-    padding: 8px 15px;
-  }
+        <div>
+            <label for="id_password2">Confirm password</label>
+            <input type="password"
+                   id="id_password2"
+                   name="{{ form.password2.html_name }}"
+                   autocomplete="new-password"
+                   required>
+            {% if form.password2.errors %}
+                <div class="error">{{ form.password2.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-  .error {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    text-align: left;
-    padding: 0 15px;
-  }
+        <button type="submit" class="btn btn--primary">Create account</button>
+    </form>
 
-  .form-section {
-    padding: 16px;
-    font-size: .85rem;
-    background-color: #e0ecfb;
-    box-shadow: rgb(0 0 0 / 8%) 0 -1px;
-    text-align: center;
-  }
-
-  .form-section a {
-    font-weight: bold;
-    color: #0066ff;
-    transition: color .3s ease;
-  }
-
-  .form-section a:hover {
-    color: #005ce6;
-    text-decoration: underline;
-  }
-
-  /* Button */
-  .form button {
-    background-color: #0066ff;
-    color: #fff;
-    border: 0;
-    border-radius: 24px;
-    padding: 10px 16px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color .3s ease;
-    margin-top: 8px;
-  }
-
-  .form button:hover {
-    background-color: #005ce6;
-  }
-</style>
-
-<div class="form-box">
-  <form class="form" method="POST">
-    {% csrf_token %}
-    <span class="title">Register</span>
-    <span class="subtitle">Create a free account with your email.</span>
-
-    {% if form.non_field_errors %}
-      <div class="error">{{ form.non_field_errors }}</div>
-    {% endif %}
-
-    <div class="form-container">
-      {% if form.username.errors %}
-        <div class="error">{{ form.username.errors|striptags }}</div>
-      {% endif %}
-      <input type="text" name="{{ form.username.html_name }}" value="" class="input" placeholder="{{ form.username.field.widget.attrs.placeholder }}">
-
-      {% if form.email.errors %}
-        <div class="error">{{ form.email.errors|striptags }}</div>
-      {% endif %}
-      <input type="email" name="{{ form.email.html_name }}" value="" class="input" placeholder="{{ form.email.field.widget.attrs.placeholder }}">
-
-      {% if form.password.errors %}
-        <div class="error">{{ form.password.errors|striptags }}</div>
-      {% endif %}
-      <input type="password" name="{{ form.password.html_name }}" class="input" placeholder="{{ form.password.label }}">
-
-      {% if form.password2.errors %}
-        <div class="error">{{ form.password2.errors|striptags }}</div>
-      {% endif %}
-      <input type="password" name="{{ form.password2.html_name }}" class="input" placeholder="{{ form.password2.label }}">
+    <div class="form-card__footer">
+        Already have an account? <a href="{% url 'login' %}">Log in</a>
     </div>
-
-    <button type="submit">Register</button>
-  </form>
-
-  <div class="form-section">
-    <p>Have an account? <a href="{% url 'login' %}">Log in</a></p>
-  </div>
 </div>
-
 {% endblock %}

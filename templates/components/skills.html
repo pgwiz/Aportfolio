@@ -1,27 +1,42 @@
-<!-- components/skills.html -->
-<section class="skills-section animate-on-scroll">
-    <h2>Skills
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="skills-grid">
-        {% if skills %}
-            {% for skill in skills %}
-                <div class="skill-card">
-                    <!-- Gradient Border Container -->
-                    <div class="skill-card-info">
-                        <h4>{{ skill.name }}</h4>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: {{ skill.proficiency }}%;"></div>
-                        </div>
-                        <p><strong>Type:</strong> {{ skill.skill_type }}</p>
-                        <p><strong>Category:</strong> {{ skill.category }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No skills added yet.</p>
-        {% endif %}
+{# components/skills.html #}
+<section id="skills" class="animate-on-scroll">
+    <div class="section-header">
+        <span class="section-eyebrow">Skills</span>
+        <h2 class="section-title">Tools &amp; technologies</h2>
+        <p class="section-subtitle">A snapshot of the stack I work with day-to-day.</p>
     </div>
+
+    {% if skills %}
+        <div class="card-grid">
+            {% for skill in skills %}
+                <article class="skill-card">
+                    <div class="skill-card__head">
+                        <span class="skill-card__name">{{ skill.name }}</span>
+                        <span class="skill-card__pct">{{ skill.proficiency }}%</span>
+                    </div>
+                    <div class="skill-bar" role="progressbar"
+                         aria-valuenow="{{ skill.proficiency }}"
+                         aria-valuemin="0" aria-valuemax="100"
+                         aria-label="{{ skill.name }} proficiency">
+                        <div class="skill-bar__fill"
+                             data-skill-fill
+                             data-target="{{ skill.proficiency }}"></div>
+                    </div>
+                    <div class="skill-card__meta">
+                        {% if skill.skill_type %}
+                            <span class="chip">{{ skill.get_skill_type_display }}</span>
+                        {% endif %}
+                        {% if skill.category %}
+                            <span class="chip chip--accent">{{ skill.category }}</span>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <p class="empty__title">No skills added yet</p>
+            <p>Sign in and add your first skill from the admin or updater page.</p>
+        </div>
+    {% endif %}
 </section>

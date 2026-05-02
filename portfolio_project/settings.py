@@ -185,24 +185,35 @@ from urllib.parse import urlparse
 
 load_dotenv()
 
+# Database configuration
+# ----------------------
+# When `DATABASE_URL` is set we use Postgres (production / staging behavior).
+# When it isn't, we fall back to a local sqlite file so the project is
+# trivially runnable for development and testing.
+_database_url = os.getenv("DATABASE_URL")
 
-
-# Replace the DATABASES section of your settings.py with this
-tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
-path = tmpPostgres.path
-if isinstance(path, bytes):
-    path = path.decode('utf-8')
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': path.replace('/', ''),
-        'USER': tmpPostgres.username,
-        'PASSWORD': tmpPostgres.password,
-        'HOST': tmpPostgres.hostname,
-        'PORT': 5432,
+if _database_url:
+    _parsed = urlparse(_database_url)
+    _name = _parsed.path or ''
+    if isinstance(_name, bytes):
+        _name = _name.decode('utf-8')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': _name.lstrip('/'),
+            'USER': _parsed.username or '',
+            'PASSWORD': _parsed.password or '',
+            'HOST': _parsed.hostname or '',
+            'PORT': _parsed.port or 5432,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -253,9 +264,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'authentication.PortfolioUser'
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000
+# Security headers — only enforce HTTPS-only cookies + HSTS in production.
+# In development (DEBUG=True) we relax these so http://localhost works.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

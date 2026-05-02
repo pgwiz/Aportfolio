@@ -1,15 +1,32 @@
+# Environment / secrets
 .env
+*.env
+!.env.example
 .smw
 ptg
 ptg.sh
 ptg.ps1
-__pycache__
-__pycache__
-*.egg-info
+
+# Python
+__pycache__/
+*.py[cod]
 *.egg
+*.egg-info/
+.venv/
+venv/
+
+# Build / dist
 *.whl
 *.tar.gz
 *.zip
 *.tar
-*.pyc
-.gitignore
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store

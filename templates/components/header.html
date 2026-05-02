@@ -1,17 +1,46 @@
-<!-- components/header.html -->
-<section class="profile-section animate-on-scroll">
-    <h2>Profile
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="card">
-        <!-- Gradient Border Container -->
-        <div class="card-info">
-            <img src="{{ user.profile.avatar }}" alt="{{ user.profile.name }} Avatar" class="card-avatar">
-            <h3>{{ user.profile.name }}</h3>
-            <p class="tagline">{{ user.profile.tagline }}</p>
-            <p class="bio">{{ user.profile.bio }}</p>
+{# components/header.html — hero / about #}
+<section id="about" class="hero animate-on-scroll">
+    <div class="hero__inner">
+        <div class="hero__copy">
+            <span class="hero__eyebrow">
+                {% if profile.tagline %}{{ profile.tagline }}{% else %}Available for new opportunities{% endif %}
+            </span>
+
+            <h1 class="hero__title">
+                Hi, I'm
+                <span class="accent">{{ profile.name|default:"a developer" }}</span>.
+            </h1>
+
+            <p class="hero__lead">
+                {% if profile.bio %}
+                    {{ profile.bio }}
+                {% else %}
+                    I build thoughtful, fast, and accessible web experiences.
+                    This portfolio is a living showcase of my work — projects,
+                    skills, and the things I've shipped.
+                {% endif %}
+            </p>
+
+            <div class="hero__actions">
+                <a class="btn btn--primary" href="#projects">View projects</a>
+                <a class="btn btn--ghost" href="#contact">Get in touch</a>
+            </div>
+        </div>
+
+        <div class="hero__visual" aria-hidden="true">
+            <div class="hero__avatar-wrap">
+                {% if profile and profile.avatar %}
+                    <img class="hero__avatar"
+                         src="{{ profile.avatar }}"
+                         alt="{{ profile.name|default:'Avatar' }}"
+                         loading="lazy"
+                         decoding="async">
+                {% else %}
+                    <div class="hero__avatar hero__avatar--placeholder">
+                        {{ profile.name|default:"P"|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </section>

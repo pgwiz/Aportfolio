@@ -1,0 +1,3 @@
+/* Intentionally empty.
+   Kept so {% static 'css/cards.css' %} references in older templates don't 404.
+   All card styles now live in styles.css. */
