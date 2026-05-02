@@ -67,14 +67,57 @@ if not DEBUG:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+# Helper to read boolean env vars ("1", "true", "yes" -> True).
+def _env_bool(name: str, default: bool = False) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in ("1", "true", "yes", "on")
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qfjbcse1zmp=6y84(^#btvgjyi#hv@7wqz81op*#89x+o*0)bi'
+# Read from the environment in production. The hardcoded fallback is only for
+# local development convenience and is intentionally prefixed `django-insecure-`.
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-qfjbcse1zmp=6y84(^#btvgjyi#hv@7wqz81op*#89x+o*0)bi",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _env_bool("DEBUG", default=True)
 
+# Comma-separated list of hosts allowed to serve the site.
+# Vercel/Render style: pass `ALLOWED_HOSTS=example.com,www.example.com`.
+# Render injects RENDER_EXTERNAL_HOSTNAME automatically; Vercel injects VERCEL_URL.
+_allowed_hosts_env = os.environ.get(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,0.0.0.0",
+)
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts_env.split(",") if h.strip()]
 
-ALLOWED_HOSTS = []
+for _host_env in ("RENDER_EXTERNAL_HOSTNAME", "VERCEL_URL"):
+    _h = os.environ.get(_host_env)
+    if _h and _h not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_h)
+
+# Allow `*` only when explicitly opted in (e.g. behind a trusted proxy).
+if os.environ.get("ALLOWED_HOSTS_WILDCARD") == "1":
+    ALLOWED_HOSTS = ["*"]
+
+# Trust the proxy's HTTPS termination so request.is_secure() returns True
+# behind Render / Vercel / typical reverse proxies.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# CSRF trusted origins for HTTPS deployments. Read a comma-separated list
+# from the env, then auto-append the platform-provided hostnames.
+_csrf_trusted = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(",") if o.strip()]
+for _host_env in ("RENDER_EXTERNAL_HOSTNAME", "VERCEL_URL"):
+    _h = os.environ.get(_host_env)
+    if _h:
+        origin = f"https://{_h}"
+        if origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
 
 
 # Application definition
@@ -129,19 +172,16 @@ SPECTACULAR_SETTINGS = {
 ASGI_APPLICATION = 'portfolio_project.asgi.application'
 
 
-# Install package first, then use this configuration:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'csp.middleware.CSPMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'csp.middleware.CSPMiddleware',
 ]
 
 CSP_DEFAULT_SRC = ["'self'"]
@@ -255,8 +295,18 @@ LOGIN_REDIRECT_URL = '/'  # Redirect to the homepage after login
 
 
 # Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# WhiteNoise: hashed + compressed static files in production.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Media files
 MEDIA_URL = '/media/'
