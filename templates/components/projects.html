@@ -1,38 +1,57 @@
-<!-- components/projects.html -->
-<section class="projects-section animate-on-scroll">
-    <h2>Projects
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="projects-grid">
-        {% for project in projects %}
-        <div class="project-card">
-            <!-- Gradient Border Container -->
-            <div class="card-info">
-                <h4>{{ project.title }}</h4>
-                <p class="description">{{ project.description }}</p>
-                <ul class="details">
-                    <li><strong>Tech Stack:</strong> {{ project.tech_stack|join:", " }}</li>
-                    <li><strong>Type:</strong> {{ project.get_project_type_display }}</li>
-                    <li><strong>Dates:</strong> 
-                        {{ project.start_date|date:"Y-m-d" }} to 
-                        {{ project.end_date|default_if_none:"Present"|date:"Y-m-d" }}
-                    </li>
-                </ul>
-                <div class="actions">
-                    <a href="{{ project.project_url }}" target="_blank" class="btn">View Project</a>
-                    {% if project.repo_url %}
-                    <a href="{{ project.repo_url }}" target="_blank" class="btn secondary">Repository</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="no-projects">
-            <p>No projects added yet.</p>
-            <p>Please check back later for updates.</p>
-        </div>
-        {% endfor %}
+{# components/projects.html #}
+<section id="projects" class="animate-on-scroll">
+    <div class="section-header">
+        <span class="section-eyebrow">Projects</span>
+        <h2 class="section-title">Selected work</h2>
+        <p class="section-subtitle">Things I've built, shipped, and learned from.</p>
     </div>
+
+    {% if projects %}
+        <div class="card-grid">
+            {% for project in projects %}
+                <article class="card">
+                    {% if project.project_type %}
+                        <span class="project-card__type">{{ project.get_project_type_display }}</span>
+                    {% endif %}
+                    <h3 class="card__title">{{ project.title }}</h3>
+                    {% if project.description %}
+                        <p class="card__body">{{ project.description }}</p>
+                    {% endif %}
+
+                    {% if project.tech_stack %}
+                        <div class="chip-row">
+                            {% for tech in project.tech_stack %}
+                                <span class="chip">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <p class="project-card__dates">
+                        {{ project.start_date|date:"M Y" }}
+                        {% if project.end_date %}
+                            – {{ project.end_date|date:"M Y" }}
+                        {% else %}
+                            – Present
+                        {% endif %}
+                    </p>
+
+                    <div class="card__footer">
+                        {% if project.project_url %}
+                            <a class="btn btn--primary btn--sm" href="{{ project.project_url }}"
+                               target="_blank" rel="noopener noreferrer">View project</a>
+                        {% endif %}
+                        {% if project.repo_url %}
+                            <a class="btn btn--ghost btn--sm" href="{{ project.repo_url }}"
+                               target="_blank" rel="noopener noreferrer">Source</a>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <p class="empty__title">No projects yet</p>
+            <p>Check back soon — projects will appear here as they're added.</p>
+        </div>
+    {% endif %}
 </section>

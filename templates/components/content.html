@@ -1,23 +1,38 @@
-<!-- components/content.html -->
-<section class="content-section animate-on-scroll">
-    <h2>Content
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="content-grid">
-        {% if contents %}
-            {% for content in contents %}
-                <div class="content-card">
-                    <h4>{{ content.title }}</h4>
-                    <p><strong>Type:</strong> {{ content.get_content_type_display }}</p>
-                    <p><strong>Published Date:</strong> {{ content.published_date|date:"Y-m-d" }}</p>
-                    <p><strong>Description:</strong> {{ content.description }}</p>
-                    <a href="{{ content.url }}" target="_blank">View Content</a>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No content added yet.</p>
-        {% endif %}
+{# components/content.html — talks, blog posts, demos, decks #}
+<section id="content" class="animate-on-scroll">
+    <div class="section-header">
+        <span class="section-eyebrow">Content</span>
+        <h2 class="section-title">Writing &amp; talks</h2>
+        <p class="section-subtitle">Posts, demos, and presentations I've published.</p>
     </div>
+
+    {% if contents %}
+        <div class="card-grid">
+            {% for content in contents %}
+                <article class="card">
+                    {% if content.content_type %}
+                        <span class="project-card__type">{{ content.get_content_type_display }}</span>
+                    {% endif %}
+                    <h3 class="card__title">{{ content.title }}</h3>
+                    {% if content.published_date %}
+                        <p class="card__meta">{{ content.published_date|date:"F j, Y" }}</p>
+                    {% endif %}
+                    {% if content.description %}
+                        <p class="card__body">{{ content.description }}</p>
+                    {% endif %}
+                    <div class="card__footer">
+                        {% if content.url %}
+                            <a class="btn btn--ghost btn--sm" href="{{ content.url }}"
+                               target="_blank" rel="noopener noreferrer">Read more →</a>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <p class="empty__title">Nothing published yet</p>
+            <p>Articles, talks, and videos will live here.</p>
+        </div>
+    {% endif %}
 </section>

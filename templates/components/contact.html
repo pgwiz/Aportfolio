@@ -1,12 +1,32 @@
-<!-- components/contact.html -->
-<section class="contact-section animate-on-scroll">
-    <h2>Contact
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-        <span class="star">⭐</span>
-    </h2>
-    <div class="card">
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Phone:</strong> {{ user.profile.phone|default_if_none:"Not provided" }}</p>
+{# components/contact.html #}
+<section id="contact" class="animate-on-scroll">
+    <div class="section-header">
+        <span class="section-eyebrow">Contact</span>
+        <h2 class="section-title">Let's work together</h2>
+        <p class="section-subtitle">
+            The best way to reach me is by email — I usually reply within a day.
+        </p>
+    </div>
+
+    <div class="contact-card">
+        {% if user.email or profile.user.email %}
+            <div class="contact-row">
+                <span class="contact-row__label">Email</span>
+                <a href="mailto:{% if profile.user.email %}{{ profile.user.email }}{% else %}{{ user.email }}{% endif %}">
+                    {% if profile.user.email %}{{ profile.user.email }}{% else %}{{ user.email }}{% endif %}
+                </a>
+            </div>
+        {% endif %}
+
+        {% if profile.phone %}
+            <div class="contact-row">
+                <span class="contact-row__label">Phone</span>
+                <a href="tel:{{ profile.phone }}">{{ profile.phone }}</a>
+            </div>
+        {% endif %}
+
+        {% if not profile.user.email and not user.email and not profile.phone %}
+            <p class="muted">Contact details aren't published yet.</p>
+        {% endif %}
     </div>
 </section>

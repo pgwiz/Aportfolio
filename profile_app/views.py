@@ -249,37 +249,28 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        try:
-            # Fetch the user's profile (assuming one profile per user)
-            profile = Profile.objects.first()
-            
-            if profile:
-                # Fetch related data using optimized queries
-                skills = profile.skills.all()
-                projects = profile.projects.all()
-                experiences = profile.experiences.all()
-                social_links = profile.social_links.all()
-                contents = profile.contents.all()
-                interactive = getattr(profile, 'interactive', None)  # Handle one-to-one relationship
 
-                # Serialize data for rendering or JavaScript consumption
-                context['profile'] = ProfileSerializer(profile).data
-                context['skills'] = SkillSerializer(skills, many=True).data
-                context['projects'] = ProjectSerializer(projects, many=True).data
-                context['experiences'] = ExperienceSerializer(experiences, many=True).data
-                context['social_links'] = SocialLinkSerializer(social_links, many=True).data
-                context['contents'] = ContentSerializer(contents, many=True).data
-                context['interactive'] = InteractiveSerializer(interactive).data if interactive else None
+        # Pass model instances (and querysets) directly so templates can use
+        # `|date`, `get_*_display`, and related-object access naturally.
+        profile = Profile.objects.select_related("user").first()
+        context["profile"] = profile
 
-            else:
-                # Handle case where no profile exists
-                context['error'] = "No profile data available."
-
-        except Exception as e:
-            # Log the error and provide a fallback message
-            print(f"Error loading portfolio data: {e}")
-            context['error'] = "Failed to load portfolio data."
+        if profile:
+            context["skills"] = profile.skills.all()
+            context["projects"] = profile.projects.all().order_by("-start_date")
+            context["experiences"] = profile.experiences.all().order_by("-start_date")
+            context["social_links"] = profile.social_links.all()
+            context["contents"] = profile.contents.all().order_by("-published_date")
+            context["interactive"] = getattr(profile, "interactive", None)
+        else:
+            context.update({
+                "skills": [],
+                "projects": [],
+                "experiences": [],
+                "social_links": [],
+                "contents": [],
+                "interactive": None,
+            })
 
         return context
             
