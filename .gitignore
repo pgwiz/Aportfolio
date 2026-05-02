@@ -25,6 +25,10 @@ venv/
 db.sqlite3
 db.sqlite3-journal
 media/
+staticfiles/
+
+# Vercel
+.vercel/
 
 # Editor / OS
 .idea/

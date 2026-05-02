@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+.git/
+.github/
+.idea/
+.vscode/
+.DS_Store
+media/
+staticfiles/
+scripts/
+docs/
+*.zip
+*.tar.gz

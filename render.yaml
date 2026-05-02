@@ -1,0 +1,47 @@
+# Render Blueprint — provisions a Django web service, Postgres database, and
+# Redis instance for Channels. Push this to a public Render-connected repo and
+# click "New Blueprint" → select this repo.
+#
+# Docs: https://render.com/docs/blueprint-spec
+
+databases:
+  - name: aportfolio-db
+    plan: free
+    databaseName: aportfolio
+    user: aportfolio
+
+services:
+  # Redis instance used by Django Channels (channels_redis).
+  - type: redis
+    name: aportfolio-redis
+    plan: free
+    ipAllowList: []
+
+  # Django web service. Daphne is used so Channels/WebSockets keep working.
+  - type: web
+    name: aportfolio
+    runtime: python
+    plan: free
+    buildCommand: ./build.sh
+    startCommand: daphne -b 0.0.0.0 -p $PORT portfolio_project.asgi:application
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: WEB_CONCURRENCY
+        value: 2
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: aportfolio-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: aportfolio-redis
+          type: redis
+          property: connectionString
+      # Render injects RENDER_EXTERNAL_HOSTNAME automatically; settings.py picks it up.
